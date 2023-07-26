@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <title>Quiz Competition</title>
+    <style>
+        .team-container {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Initial Score Setting</h2>
+    <form id="initialScoreForm">
+        <label for="NKA">NKA 🌿:</label>
+        <input type="number" id="NKA-input" name="NKA" min="0"><br>
+         
+        <label for="NKNV">NKNV 🚁:</label>
+        <input type="number" id="NKNV-input" name="NKNV" min="0"><br>
+         
+        <label for="NPN">NPN 🎣:</label>
+        <input type="number" id="NPN-input" name="NPN" min="0"><br>
+         
+        <label for="KST">KST 🕊️:</label>
+        <input type="number" id="KST-input" name="KST" min="0"><br>
+         
+        <label for="NEVPO"> NEVPO🚉 :</label>
+        <input type="number" id="NEVPO-input" name="NEVPO" min="0"><br>
+
+
+
+         
+        <button type="button" onclick="setInitialScores()">Set Initial Scores</button>
+    </form>
+
+    <div id="NKA" class="team-container">
+        <h2><span class="tn">NKA 🌿</span> - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('NKA', 3)">Add 3 Points</button>
+        <button onclick="addPoints('NKA', 2)">Add 2 Points</button>
+        <button onclick="addPoints('NKA', 1)">Add 1 Point</button>
+         <br>  <button onclick="addPoints('NKA', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('NKA', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('NKA', -1)">Minus 1 Point</button>
+         
+    </div>
+
+    <div id="NKNV" class="team-container">
+        <h2><span class="tn">NKNV 🚁</span> - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('NKNV', 3)">Add 3 Points</button>
+        <button onclick="addPoints('NKNV', 2)">Add 2 Points</button>
+        <button onclick="addPoints('NKNV', 1)">Add 1 Point</button>
+         <br><button onclick="addPoints('NKNV', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('NKNV', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('NKNV', -1)">Minus 1 Point</button>
+    </div>
+
+    <div id="NPN" class="team-container">
+        <h2><span class="tn">NPN 🎣</span> - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('NPN', 3)">Add 3 Points</button>
+        <button onclick="addPoints('NPN', 2)">Add 2 Points</button>
+        <button onclick="addPoints('NPN', 1)">Add 1 Point</button>
+         <br> <button onclick="addPoints('NPN', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('NPN', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('NPN', -1)">Minus 1 Point</button>
+    </div>
+
+
+    <div id="KST" class="team-container">
+        <h2><span class="tn">KST 🕊️</span> - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('KST', 3)">Add 3 Points</button>
+        <button onclick="addPoints('KST', 2)">Add 2 Points</button>
+        <button onclick="addPoints('KST', 1)">Add 1 Point</button>
+         <br> <button onclick="addPoints('KST', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('KST', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('KST', -1)">Minus 1 Point</button>
+    </div>
+
+    <div id="NEVPO" class="team-container">
+        <h2><span class="tn">NEVPO🚉</span> - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('NEVPO', 3)">Add 3 Points</button>
+        <button onclick="addPoints('NEVPO', 2)">Add 2 Points</button>
+        <button onclick="addPoints('NEVPO', 1)">Add 1 Point</button>
+         <br><button onclick="addPoints('NEVPO', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('NEVPO', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('NEVPO', -1)">Minus 1 Point</button>
+    </div>
+  <BR>
+<button id="download-btn">Download Image</button>
+
+     <BR>
+    <!-- Add remaining teams in similar format -->
+
+    <h2>Total Scores</h2>
+    <div id="totalScores">
+        <!-- Total scores will be displayed here -->
+    </div>
+
+    <script>
+        function addPoints(teamId, points) {
+            var teamElement = document.getElementById(teamId);
+            var scoreElement = teamElement.querySelector('.score');
+            var currentScore = parseInt(scoreElement.textContent);
+            var newScore = currentScore + points;
+            scoreElement.textContent = newScore;
+
+            updateTotalScores();
+        }
+
+        function setInitialScores() {
+            var teams = document.getElementsByClassName('team-container');
+            for (var i = 0; i < teams.length; i++) {
+                var teamId = teams[i].id;
+                var scoreInput = document.getElementById(teamId + '-input');
+                if (scoreInput.value !== '') {
+                    teams[i].querySelector('.score').textContent = scoreInput.value;
+                }
+            }
+
+            updateTotalScores();
+        }
+
+function updateTotalScores() {
+    var totalScoresElement = document.getElementById('totalScores');
+    totalScoresElement.innerHTML = '❤️🩵🩷🧡💛💚🩵💙💜🖤🩷<br>*🐎രതിയുടെ പടയോട്ടം🐎*<br>*നാലാം ദിവസം*<br>'; // Set the header text
+
+    var teams = document.getElementsByClassName('team-container');
+    
+    // Create an array to store teamId and score pair
+    var teamScores = [];
+    
+    for (var i = 0; i < teams.length; i++) {
+        var teamId = teams[i].querySelector('.tn').textContent;
+        var score = parseInt(teams[i].querySelector('.score').textContent);
+        
+        // Store the teamId and score pair in the array
+        teamScores.push({teamId, score});
+    }
+
+    // Sort the array in descending order of scores
+    teamScores.sort((a, b) => b.score - a.score);
+    
+    // Add sorted team scores to the HTML
+    for (var i = 0; i < teamScores.length; i++) {
+        totalScoresElement.innerHTML += `<br>*${teamScores[i].teamId}* ❗ ${teamScores[i].score}<br>`;
+    }
+
+    totalScoresElement.innerHTML += '<br>🩷❤️🧡💛💚🩵💙💜🖤🩷<br><br>*IST 11 PM*<br>🩷❤️🧡💛💚🩵💙💜🖤🩷';
+
+    // Copy to clipboard
+    var clipboardText = totalScoresElement.innerHTML.replace(/<br>/g, '\n');
+    navigator.clipboard.writeText(clipboardText).then(function() {
+        console.log('Copying to clipboard was successful!');
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+    document.getElementById("download-btn").addEventListener("click", function() {
+        html2canvas(document.querySelector("#totalScores")).then(canvas => {
+            var link = document.createElement('a');
+            link.download = 'scoreboard.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    });
+
+    </script>
+</body>
+</html>
