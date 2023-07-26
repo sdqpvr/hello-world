@@ -67,24 +67,26 @@
 
 function updateTotalScores() {
     var totalScoresElement = document.getElementById('totalScores');
-    totalScoresElement.innerHTML = '❤️🩵🩷🧡💛💚🩵💙💜🖤🩷\n*🐎രതിയുടെ പടയോട്ടം🐎*\n*നാലാം ദിവസം*\n'; // Set the header text
+    totalScoresElement.innerHTML = '❤️🩵🩷🧡💛💚🩵💙💜🖤🩷<br>*🐎രതിയുടെ പടയോട്ടം🐎*<br>*നാലാം ദിവസം*<br>'; // Set the header text
 
     var teams = document.getElementsByClassName('team-container');
     for (var i = 0; i < teams.length; i++) {
         var teamId = teams[i].id;
         var score = teams[i].querySelector('.score').textContent;
-        totalScoresElement.innerHTML += `\n*${teamId}* ❗ ${score}\n`;
+        totalScoresElement.innerHTML += `<br>*${teamId}* ❗ ${score}<br>`;
     }
 
-    totalScoresElement.innerHTML += '\n🩷❤️🧡💛💚🩵💙💜🖤🩷\n\n*IST 11 PM*\n🩷❤️🧡💛💚🩵💙💜🖤🩷';
-    
+    totalScoresElement.innerHTML += '<br>🩷❤️🧡💛💚🩵💙💜🖤🩷<br><br>*IST 11 PM*<br>🩷❤️🧡💛💚🩵💙💜🖤🩷';
+
     // Copy to clipboard
-    navigator.clipboard.writeText(totalScoresElement.innerText).then(function() {
+    var clipboardText = totalScoresElement.innerHTML.replace(/<br>/g, '\n');
+    navigator.clipboard.writeText(clipboardText).then(function() {
         console.log('Copying to clipboard was successful!');
     }, function(err) {
         console.error('Could not copy text: ', err);
     });
 }
+
     </script>
 </body>
 </html>
