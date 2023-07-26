@@ -25,12 +25,32 @@
 
     <!-- Add remaining teams in similar format -->
 
+    <h2>Total Scores</h2>
+    <div id="totalScores">
+        <!-- Total scores will be displayed here -->
+    </div>
+
     <script>
         function addPoints(teamId, points) {
             var teamElement = document.getElementById(teamId);
             var scoreElement = teamElement.querySelector('.score');
             var currentScore = parseInt(scoreElement.textContent);
-            scoreElement.textContent = currentScore + points;
+            var newScore = currentScore + points;
+            scoreElement.textContent = newScore;
+
+            updateTotalScores();
+        }
+
+        function updateTotalScores() {
+            var totalScoresElement = document.getElementById('totalScores');
+            totalScoresElement.innerHTML = ''; // Clear existing content
+
+            var teams = document.getElementsByClassName('team-container');
+            for (var i = 0; i < teams.length; i++) {
+                var teamId = teams[i].id;
+                var score = teams[i].querySelector('.score').textContent;
+                totalScoresElement.innerHTML += `<p>${teamId}: ${score} points</p>`;
+            }
         }
     </script>
 </body>
