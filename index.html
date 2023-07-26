@@ -122,10 +122,24 @@ function updateTotalScores() {
     totalScoresElement.innerHTML = '❤️🩵🩷🧡💛💚🩵💙💜🖤🩷<br>*🐎രതിയുടെ പടയോട്ടം🐎*<br>*നാലാം ദിവസം*<br>'; // Set the header text
 
     var teams = document.getElementsByClassName('team-container');
+    
+    // Create an array to store teamId and score pair
+    var teamScores = [];
+    
     for (var i = 0; i < teams.length; i++) {
         var teamId = teams[i].querySelector('.tn').textContent;
-        var score = teams[i].querySelector('.score').textContent;
-        totalScoresElement.innerHTML += `<br>*${teamId}* ❗ ${score}<br>`;
+        var score = parseInt(teams[i].querySelector('.score').textContent);
+        
+        // Store the teamId and score pair in the array
+        teamScores.push({teamId, score});
+    }
+
+    // Sort the array in descending order of scores
+    teamScores.sort((a, b) => b.score - a.score);
+    
+    // Add sorted team scores to the HTML
+    for (var i = 0; i < teamScores.length; i++) {
+        totalScoresElement.innerHTML += `<br>*${teamScores[i].teamId}* ❗ ${teamScores[i].score}<br>`;
     }
 
     totalScoresElement.innerHTML += '<br>🩷❤️🧡💛💚🩵💙💜🖤🩷<br><br>*IST 11 PM*<br>🩷❤️🧡💛💚🩵💙💜🖤🩷';
@@ -138,6 +152,7 @@ function updateTotalScores() {
         console.error('Could not copy text: ', err);
     });
 }
+
 
     </script>
 </body>
