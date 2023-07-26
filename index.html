@@ -14,9 +14,22 @@
     <form id="initialScoreForm">
         <label for="NKA">NKA 🌿:</label>
         <input type="number" id="NKA-input" name="NKA" min="0"><br>
+         
         <label for="NKNV">NKNV 🚁:</label>
         <input type="number" id="NKNV-input" name="NKNV" min="0"><br>
-        <!-- Add remaining team inputs in similar format -->
+         
+        <label for="NPN">NPN 🎣:</label>
+        <input type="number" id="NPN-input" name="NPN" min="0"><br>
+         
+        <label for="KST">KST 🕊️:</label>
+        <input type="number" id="KST-input" name="KST" min="0"><br>
+         
+        <label for="NEVPO"> NEVPO🚉 :</label>
+        <input type="number" id="NEVPO-input" name="NEVPO" min="0"><br>
+
+
+
+         
         <button type="button" onclick="setInitialScores()">Set Initial Scores</button>
     </form>
 
@@ -36,12 +49,43 @@
         <button onclick="addPoints('NKNV', 3)">Add 3 Points</button>
         <button onclick="addPoints('NKNV', 2)">Add 2 Points</button>
         <button onclick="addPoints('NKNV', 1)">Add 1 Point</button>
-         <br>
-                 <button onclick="addPoints('NKNV', -3)">Minus 3 Points</button>
+         <br><button onclick="addPoints('NKNV', -3)">Minus 3 Points</button>
         <button onclick="addPoints('NKNV', -2)">Minus 2 Points</button>
         <button onclick="addPoints('NKNV', -1)">Minus 1 Point</button>
     </div>
 
+    <div id="NPN" class="team-container">
+        <h2>NPN 🎣 - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('NPN', 3)">Add 3 Points</button>
+        <button onclick="addPoints('NPN', 2)">Add 2 Points</button>
+        <button onclick="addPoints('NPN', 1)">Add 1 Point</button>
+         <br> <button onclick="addPoints('NPN', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('NPN', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('NPN', -1)">Minus 1 Point</button>
+    </div>
+
+
+    <div id="KST" class="team-container">
+        <h2>KST 🕊️ - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('KST', 3)">Add 3 Points</button>
+        <button onclick="addPoints('KST', 2)">Add 2 Points</button>
+        <button onclick="addPoints('KST', 1)">Add 1 Point</button>
+         <br> <button onclick="addPoints('KST', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('KST', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('KST', -1)">Minus 1 Point</button>
+    </div>
+
+    <div id="NEVPO" class="team-container">
+        <h2>NEVPO🚉 - Score: <span class="score">0</span></h2>
+        <button onclick="addPoints('NEVPO', 3)">Add 3 Points</button>
+        <button onclick="addPoints('NEVPO', 2)">Add 2 Points</button>
+        <button onclick="addPoints('NEVPO', 1)">Add 1 Point</button>
+         <br><button onclick="addPoints('NEVPO', -3)">Minus 3 Points</button>
+        <button onclick="addPoints('NEVPO', -2)">Minus 2 Points</button>
+        <button onclick="addPoints('NEVPO', -1)">Minus 1 Point</button>
+    </div>
+
+     
     <!-- Add remaining teams in similar format -->
 
     <h2>Total Scores</h2>
