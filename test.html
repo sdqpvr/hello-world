@@ -96,7 +96,55 @@
     <div id="totalScores">
         <!-- Total scores will be displayed here -->
     </div>
+    <h2>State Storage</h2>
+    <label for="state">State:</label>
+    <select id="state">
+        <!-- Options 1-30 -->
+        <option selected>Choose...</option>
+        <!-- Numbers 1-30 are generated using JavaScript in the script section -->
+    </select>
+    <button type="button" onclick="storeState()">Set</button>
+    <button type="button" onclick="updateState()">Update</button>
+         <script>
+        // Generate numbers 1-30 for the dropdown
+        var select = document.getElementById('state');
+        for (var i = 1; i <= 30; i++) {
+            var opt = document.createElement('option');
+            opt.value = i;
+            opt.innerHTML = i;
+            select.appendChild(opt);
+        }
 
+        // Variable to store states
+        var states = {};
+
+        function storeState() {
+            var stateNumber = document.getElementById('state').value;
+            var teams = document.getElementsByClassName('team-container');
+            states[stateNumber] = {};
+            for (var i = 0; i < teams.length; i++) {
+                var teamId = teams[i].id;
+                var score = parseInt(teams[i].querySelector('.score').textContent);
+                states[stateNumber][teamId] = score;
+            }
+            console.log(`State ${stateNumber} stored!`);
+        }
+
+        function updateState() {
+            var stateNumber = document.getElementById('state').value;
+            var teams = document.getElementsByClassName('team-container');
+            for (var i = 0; i < teams.length; i++) {
+                var teamId = teams[i].id;
+                if (states[stateNumber] && states[stateNumber][teamId] !== undefined) {
+                    teams[i].querySelector('.score').textContent = states[stateNumber][teamId];
+                }
+            }
+            console.log(`State ${stateNumber} updated!`);
+            updateTotalScores();
+        }
+
+        // Rest of the script (omitted for brevity)
+    </script>
     <script>
         function addPoints(teamId, points) {
             var teamElement = document.getElementById(teamId);
