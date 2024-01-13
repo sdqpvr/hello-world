@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Score Tracker</title>
+    <style>
+        .container {
+            padding: 20px;
+        }
+        .user {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Quiz Score Tracker</h2>
+        <div id="users">
+            <!-- User score elements will be added here by JavaScript -->
+        </div>
+        <h3>Total Scores:</h3>
+        <pre id="totalScores"></pre>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const usersDiv = document.getElementById('users');
+            const totalScoresPre = document.getElementById('totalScores');
+            let scores = {};
+            let nameMappings = {};
+
+            function updateTotalScores() {
+                let output = "🏆 ARIVINTE NALKAVALA PSC QUIZ 🏆\n🌟 TOTAL POINTS 🌟\n";
+                output += Object.entries(scores)
+                    .sort((a, b) => b[1] - a[1])
+                    .map((entry, index) => `${index + 1}. *${entry[0]}* - *${entry[1]}* 🌈`)
+                    .join('\n');
+
+                totalScoresPre.textContent = output;
+                copyToClipboard(output);
+            }
+
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(function() {
+                    console.log('Copying to clipboard was successful!');
+                }, function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            }
+
+            function handleNameChange(oldName, newName) {
+                if (scores[oldName] !== undefined) {
+                    scores[newName] = scores[oldName];
+                    delete scores[oldName];
+                    updateTotalScores();
+                }
+                nameMappings[newName] = newName;
+            }
+
+            for (let i = 1; i <= 10; i++) {
+                let userDiv = document.createElement('div');
+                userDiv.className = 'user';
+
+                let input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = `User ${i}`;
+                let userName = `User ${i}`;
+                nameMappings[userName] = userName;
+                input.onchange = function () {
+                    let oldName = nameMappings[userName];
+                    let newName = this.value;
+                    userName = newName;
+                    handleNameChange(oldName, newName);
+                };
+
+                let addButton = document.createElement('button');
+                addButton.textContent = '+';
+                addButton.onclick = function () {
+                    let name = nameMappings[userName];
+                    scores[name] = (scores[name] || 0) + 1;
+                    updateTotalScores();
+                };
+
+                let minusButton = document.createElement('button');
+                minusButton.textContent = '-';
+                minusButton.onclick = function () {
+                    let name = nameMappings[userName];
+                    scores[name] = (scores[name] || 0) - 1;
+                    updateTotalScores();
+                };
+
+                userDiv.appendChild(input);
+                userDiv.appendChild(addButton);
+                userDiv.appendChild(minusButton);
+
+                usersDiv.appendChild(userDiv);
+            }
+        });
+    </script>
+</body>
+</html>
