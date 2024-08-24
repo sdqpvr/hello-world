@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Quiz Score Tracker</title>
-   <!-- Add Bootstrap CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FISH BOT QUIZ POINT UPDATER</title>
+    <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .container {
@@ -11,7 +13,7 @@
         .user, .settings {
             margin-bottom: 10px;
         }
-        .user input {
+        .user input, .user select {
             margin-right: 5px;
         }
     </style>
@@ -29,6 +31,11 @@
                 <input type="text" id="quizTitle" value="ARIVINTE NALKAVALA PSC QUIZ">
                 <button onclick="updateTitle()">Update Title</button>
             </div>
+            <div>
+                <label for="teamNames">Team Names (comma-separated):</label>
+                <input type="text" id="teamNames" value="Team A,Team B,Team C">
+                <button onclick="updateTeams()">Update Teams</button>
+            </div>
         </div>
         <h2>Quiz Score Tracker</h2>
         <div id="users">
@@ -43,6 +50,7 @@
         let scores = {};
         let teamScores = {};
         let nameMappings = {};
+        let teamNames = ["Team A", "Team B", "Team C"];
         const usersDiv = document.getElementById('users');
         const totalScoresPre = document.getElementById('totalScores');
 
@@ -51,10 +59,19 @@
         });
 
         function updateTotalScores() {
+            teamScores = {}; // Reset team scores
+
+            // Calculate total scores based on the values in the textboxes
+            Object.keys(scores).forEach(name => {
+                let score = parseInt(scores[name]) || 0;
+                let team = nameMappings[name].team;
+                teamScores[team] = (teamScores[team] || 0) + score;
+            });
+
             let output = `🏆 ${quizTitle} 🏆\n🌟 TEAM TOTAL POINTS 🌟\n`;
             output += Object.entries(teamScores)
                 .sort((a, b) => b[1] - a[1])
-                .map(entry => `${entry[0]}: ${entry[1]}hi`)
+                .map(entry => `${entry[0]}: ${entry[1]}`)
                 .join('\n') + "\n";
 
             output += "🌟 INDIVIDUAL POINTS 🌟\n";
@@ -89,7 +106,6 @@
                     let removedUserName = `User ${i}`;
                     delete scores[removedUserName];
                     delete nameMappings[removedUserName];
-                    // Consider removing team scores if needed
                 }
             }
             updateTotalScores();
@@ -100,6 +116,34 @@
             updateTotalScores();
         }
 
+        function updateTeams() {
+            let teamsInput = document.getElementById('teamNames').value;
+            teamNames = teamsInput.split(',').map(team => team.trim()).filter(team => team); // Remove empty team names
+            updateAllTeamDropdowns(); // Update the team dropdowns with new teams
+        }
+
+        function updateAllTeamDropdowns() {
+            let teamSelects = document.querySelectorAll('.user select');
+            teamSelects.forEach(select => {
+                let currentTeam = select.value; // Store current selected team
+                select.innerHTML = ''; // Clear existing options
+
+                teamNames.forEach(team => {
+                    let option = document.createElement('option');
+                    option.value = team;
+                    option.textContent = team;
+                    select.appendChild(option);
+                });
+
+                if (teamNames.includes(currentTeam)) {
+                    select.value = currentTeam; // Restore previous team if still valid
+                } else {
+                    select.value = teamNames[0]; // Default to first team if previous team is no longer valid
+                    select.dispatchEvent(new Event('change')); // Trigger change event to update mappings
+                }
+            });
+        }
+
         function addUserInput(index) {
             let userDiv = document.createElement('div');
             userDiv.className = 'user';
@@ -108,40 +152,56 @@
             input.type = 'text';
             input.placeholder = `User ${index}`;
             let userName = `User ${index}`;
-            nameMappings[userName] = userName;
+            nameMappings[userName] = { name: userName, team: teamNames[0] }; // Default to first team
             input.onchange = function () {
-                let oldName = nameMappings[userName];
-                let newName = this.value;
-                userName = newName;
-                handleNameChange(oldName, newName);
+                let oldName = nameMappings[userName].name;
+                let newName = this.value.trim();
+                if (newName && !scores[newName]) {
+                    userName = newName;
+                    handleNameChange(oldName, newName);
+                } else {
+                    this.value = oldName; // Revert to old name if input is invalid
+                }
             };
 
-            let teamInput = document.createElement('input');
-            teamInput.type = 'text';
-            teamInput.placeholder = `Team for User ${index}`;
+            let teamSelect = document.createElement('select');
+            teamNames.forEach(team => {
+                let option = document.createElement('option');
+                option.value = team;
+                option.textContent = team;
+                teamSelect.appendChild(option);
+            });
+
+            teamSelect.onchange = function () {
+                handleTeamChange(userName, this.value);
+            };
+
+            let scoreInput = document.createElement('input');
+            scoreInput.type = 'number';
+            scoreInput.value = 0;
+            scoreInput.style.width = '60px';
+            scoreInput.onchange = function () {
+                scores[userName] = parseInt(this.value) || 0;
+                updateTotalScores();
+            };
 
             let addButton = document.createElement('button');
             addButton.textContent = '+';
             addButton.onclick = function () {
-                let name = nameMappings[userName];
-                let teamName = teamInput.value;
-                scores[name] = (scores[name] || 0) + 1;
-                teamScores[teamName] = (teamScores[teamName] || 0) + 1;
-                updateTotalScores();
+                scoreInput.value = parseInt(scoreInput.value) + 1;
+                scoreInput.dispatchEvent(new Event('change'));
             };
 
             let minusButton = document.createElement('button');
             minusButton.textContent = '-';
             minusButton.onclick = function () {
-                let name = nameMappings[userName];
-                let teamName = teamInput.value;
-                scores[name] = (scores[name] || 0) - 1;
-                teamScores[teamName] = (teamScores[teamName] || 0) - 1;
-                updateTotalScores();
+                scoreInput.value = Math.max(0, parseInt(scoreInput.value) - 1); // Prevent negative scores
+                scoreInput.dispatchEvent(new Event('change'));
             };
 
             userDiv.appendChild(input);
-            userDiv.appendChild(teamInput);
+            userDiv.appendChild(teamSelect);
+            userDiv.appendChild(scoreInput);
             userDiv.appendChild(addButton);
             userDiv.appendChild(minusButton);
 
@@ -152,10 +212,15 @@
             if (scores[oldName] !== undefined) {
                 scores[newName] = scores[oldName];
                 delete scores[oldName];
-                // Consider handling team score transfer if needed
-                updateTotalScores();
             }
-            nameMappings[newName] = newName;
+            nameMappings[newName] = { ...nameMappings[oldName], name: newName };
+            delete nameMappings[oldName];
+            updateTotalScores();
+        }
+
+        function handleTeamChange(userName, newTeam) {
+            nameMappings[userName].team = newTeam;
+            updateTotalScores();
         }
     </script>
 </body>
