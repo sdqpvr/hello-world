@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Score Tracker</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            padding: 20px;
+        }
+        .user, .settings {
+            margin-bottom: 15px;
+        }
+        .user input, .user button {
+            margin-bottom: 5px;
+        }
+        .user {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .user input[type="text"],
+        .user input[type="number"] {
+            flex: 1 1 auto;
+            margin-right: 5px;
+            min-width: 80px;
+        }
+        .user button {
+            flex: 0 0 auto;
+            margin-right: 5px;
+        }
+        @media (max-width: 576px) {
+            .user {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user input[type="text"],
+            .user input[type="number"],
+            .user button {
+                margin-right: 0;
+                margin-bottom: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="settings">
+            <div class="form-group">
+                <label for="numPlayers">Total Number of Players:</label>
+                <input type="number" id="numPlayers" class="form-control" value="10" min="1" max="50">
+                <button class="btn btn-primary mt-2" onclick="updatePlayerCount()">Update Players</button>
+            </div>
+            <div class="form-group">
+                <label for="quizTitle">Quiz Title:</label>
+                <input type="text" id="quizTitle" class="form-control" value="ARIVINTE NALKAVALA PSC QUIZ">
+                <button class="btn btn-primary mt-2" onclick="updateTitle()">Update Title</button>
+            </div>
+        </div>
+        <h2>Quiz Score Tracker</h2>
+        <div id="users" class="mb-3">
+            <!-- User score elements will be added here by JavaScript -->
+        </div>
+        <h3>Total Scores:</h3>
+        <pre id="totalScores" class="bg-light p-3"></pre>
+    </div>
+
+    <script>
+        let quizTitle = "ARIVINTE NALKAVALA PSC QUIZ";
+        let scores = {};
+        const usersDiv = document.getElementById('users');
+        const totalScoresPre = document.getElementById('totalScores');
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updatePlayerCount();
+        });
+
+        function updateTotalScores() {
+            // Calculate total scores based on the values in the textboxes
+            let output = `🏆 ${quizTitle} 🏆\n🌟 INDIVIDUAL POINTS 🌟\n`;
+            output += Object.entries(scores)
+                .sort((a, b) => b[1] - a[1])
+                .map((entry, index) => `${index + 1}. *${entry[0]}* - *${entry[1]}*`)
+                .join('\n');
+
+            totalScoresPre.textContent = output;
+            copyToClipboard(output);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                console.log('Copying to clipboard was successful!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+
+        function updatePlayerCount() {
+            let numPlayers = parseInt(document.getElementById('numPlayers').value);
+            let currentNumPlayers = usersDiv.children.length;
+
+            if (numPlayers > currentNumPlayers) {
+                for (let i = currentNumPlayers + 1; i <= numPlayers; i++) {
+                    addUserInput(i);
+                }
+            } else if (numPlayers < currentNumPlayers) {
+                for (let i = currentNumPlayers; i > numPlayers; i--) {
+                    usersDiv.removeChild(usersDiv.lastChild);
+                    let removedUserName = `User ${i}`;
+                    delete scores[removedUserName];
+                }
+            }
+            updateTotalScores();
+        }
+
+        function updateTitle() {
+            quizTitle = document.getElementById('quizTitle').value;
+            updateTotalScores();
+        }
+
+        function addUserInput(index) {
+            let userDiv = document.createElement('div');
+            userDiv.className = 'user';
+
+            let input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = `User ${index}`;
+            input.className = 'form-control';
+            let userName = `User ${index}`;
+
+            input.onchange = function () {
+                let oldName = userName;
+                let newName = this.value.trim();
+                if (newName && !scores[newName]) {
+                    userName = newName;
+                    handleNameChange(oldName, newName);
+                } else {
+                    this.value = oldName; // Revert to old name if input is invalid or duplicate
+                }
+            };
+
+            let scoreInput = document.createElement('input');
+            scoreInput.type = 'number';
+            scoreInput.value = 0;
+            scoreInput.className = 'form-control';
+            scoreInput.style.width = '60px';
+            scoreInput.onchange = function () {
+                scores[userName] = parseInt(this.value) || 0;
+                updateTotalScores();
+            };
+
+            let addButton = document.createElement('button');
+            addButton.textContent = '+';
+            addButton.className = 'btn btn-success';
+            addButton.onclick = function () {
+                scoreInput.value = parseInt(scoreInput.value) + 1;
+                scoreInput.dispatchEvent(new Event('change'));
+            };
+
+            let minusButton = document.createElement('button');
+            minusButton.textContent = '-';
+            minusButton.className = 'btn btn-danger';
+            minusButton.onclick = function () {
+                scoreInput.value = Math.max(0, parseInt(scoreInput.value) - 1); // Prevent negative scores
+                scoreInput.dispatchEvent(new Event('change'));
+            };
+
+            userDiv.appendChild(input);
+            userDiv.appendChild(scoreInput);
+            userDiv.appendChild(addButton);
+            userDiv.appendChild(minusButton);
+
+            usersDiv.appendChild(userDiv);
+        }
+
+        function handleNameChange(oldName, newName) {
+            if (scores[oldName] !== undefined) {
+                scores[newName] = scores[oldName];
+                delete scores[oldName];
+                updateTotalScores();
+            }
+        }
+    </script>
+</body>
+</html>
